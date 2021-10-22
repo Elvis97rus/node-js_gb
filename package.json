@@ -1,0 +1,27 @@
+{
+  "name": "node-js_gb",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./index.js"
+  },
+  "keywords": [],
+  "author": "ArtemSh",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elvis97rus/node-js_gb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Elvis97rus/node-js_gb/issues"
+  },
+  "homepage": "https://github.com/Elvis97rus/node-js_gb#readme",
+  "description": "",
+  "dependencies": {
+    "colors": "^1.4.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.1"
+  }
+}
