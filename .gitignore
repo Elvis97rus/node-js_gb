@@ -5,6 +5,7 @@
 .env.production
 .eslintcache
 .npm
+*.og
 logs
 *.log
 npm-debug.log*
