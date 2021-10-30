@@ -1,43 +1,43 @@
-const colors = require('colors');
+//Напишите программу, которая находит в этом файле все записи с ip-адресами 89.123.1.41 и 34.48.240.111,
+// а также сохраняет их в отдельные файлы с названием “%ip-адрес%_requests.log”.
 
-// получаем диапазон значений из консоли, при запуске файла (node ./index.js 0-99)
-let range = process.argv[2].split('-');
-let simpleNums = [];
-if(range.length === 2) {
-    if (range[0] > range[1]){
-        let l = range[0]; range[0] = range[1]; range[1] = l;
+const fs = require('fs');
+const path = require('path');
+const {EOL} = require('os');
+const { Transform } = require('stream');
+
+let buff;
+
+const readStream = new fs.ReadStream(path.join(__dirname, './access.log'), 'utf8');
+const writeStream1 = fs.createWriteStream('./176.212.24.22_requests.log')
+const writeStream2 = fs.createWriteStream('./89.123.1.41_requests.log')
+
+const transformStream = new Transform({
+    transform(chunk, encoding, callback) {
+        let transformedChunk = buff + chunk;
+
+        transformedChunk = chunk.toString().replace(/89.123.1.41/gm, '[start]89.123.1.41').replace(/^\d.+$/gm, '').replace(/\n/g, '').replace(/"curl\/7.47.0"/gm, `"curl/7.47.0"[end]${EOL}`);
+
+        let lastEnd = transformedChunk.lastIndexOf('[end]');
+        let string = transformedChunk.substr(0,lastEnd);
+
+        buff = transformedChunk.substr(lastEnd);
+
+        this.push(string);
     }
-// поочередно обходим все числа и проверяем, делится ли каждое из них на числа
-// от "2" до самого числа (не включительно), если да - флаг,
-// те что сохранили true добавляем в массив простых чисел
-    for (let i = Number(range[0]); i <= Number(range[1]); i++) {
-        let flag = true;
+});
 
-        for (let j = 2; j < i; j++) {
-            if (i % j === 0) {
-                flag = false;
-                break;
-            }
-        }
+readStream.pipe(transformStream).pipe(writeStream2);
 
-        (flag) ? simpleNums.push(i) : '';
+const transformStream2 = new Transform({
+    transform(chunk, encoding, callback) {
+        let transformedChunk = buff + chunk;
+        transformedChunk = chunk.toString().replace(/176.212.24.22/gm, '[start]176.212.24.22').replace(/^\d.+$/gm, '').replace(/\n/g, '').replace(/"curl\/7.47.0"/gm, `"curl/7.47.0"[end]${EOL}`);
+        let lastEnd = transformedChunk.lastIndexOf('[end]');
+        let string = transformedChunk.substr(0,lastEnd);
+        buff = transformedChunk.substr(lastEnd);
+        this.push(string);
     }
+});
 
-// обходим полученный массив простых чисел, при каждой итерации меняя счетчик на 1
-    for (let i = 0, counter = 0; i < simpleNums.length; i++, counter++) {
-        if (simpleNums[i] === 0 || simpleNums[i] === 1) continue;
-        switch (counter) {
-            case 1:
-                console.log(`${simpleNums[i]}`.red);
-                break;
-            case 2:
-                console.log(`${simpleNums[i]}`.green);
-                break;
-            case 3:
-                console.log(`${simpleNums[i]}`.yellow);
-                counter = 0;
-        }
-    }
-}else{
-    console.log('Error. Input 2 numbers: x-y')
-}
+readStream.pipe(transformStream2).pipe(writeStream1);
