@@ -19,9 +19,12 @@
   "homepage": "https://github.com/Elvis97rus/node-js_gb#readme",
   "description": "",
   "dependencies": {
-    "colors": "^1.4.0"
+    "colors": "^1.4.0",
+    "yargs": "^17.2.1",
+    "inquirer": "^8.2.0"
   },
   "devDependencies": {
+    "@types/yargs": "^17.0.5",
     "eslint": "^8.0.1"
   }
 }
