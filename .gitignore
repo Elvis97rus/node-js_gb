@@ -8,3 +8,5 @@
 logs
 *.log
 npm-debug.log*
+/lesson_examples
+/lesson_examples/l6/
