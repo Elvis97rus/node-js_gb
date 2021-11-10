@@ -19,9 +19,11 @@
   "homepage": "https://github.com/Elvis97rus/node-js_gb#readme",
   "description": "",
   "dependencies": {
-    "colors": "^1.4.0"
+    "colors": "^1.4.0",
+    "socket.io": "^4.3.2"
   },
   "devDependencies": {
+    "nodemon": "^2.0.14",
     "eslint": "^8.0.1"
   }
 }

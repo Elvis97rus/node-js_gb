@@ -1,0 +1,60 @@
+<html>
+
+<script src="https://cdn.socket.io/3.1.1/socket.io.min.js"
+        integrity="sha384-gDaozqUvc4HTgo8iZjwth73C6dDDeOJsAgpxBcMpZYztUfjHXpzrpdrHRdVp8ySO"
+        crossorigin="anonymous"></script>
+
+<head>
+    <title>Socket App</title>
+</head>
+<body>
+<h1 id="title"></h1>
+<h2>Total users: <span id="total-users">0</span></h2>
+<input type="text" id="input" autofocus>
+
+<input type="submit" id="send" value="Send">
+
+<div id="messages"></div>
+</body>
+<script type="text/javascript">
+    const socket = io();
+
+    const addMessage = (data) => {
+        const msgSpan = document.createElement('span').innerHTML = `${data.user}: ${data.msg}`;
+        document.getElementById('messages').append(msgSpan);
+        document.getElementById('messages').append(document.createElement('br'));
+    };
+
+    socket.on('connect', function () {
+        socket.emit('USER_CONNECTED', {socketId: socket.id});
+    });
+    socket.on('CREATED_NAME', function ({username, token}) {
+        addName(username, token);
+    });
+
+    socket.on('SERVER_MSG', function (data) {
+        addMessage(data);
+    });
+
+    socket.on('USER_UPDATE_COUNT', function (data) {
+        addUsersCount(data);
+    });
+
+    document.getElementById('send').onclick = function () {
+        socket.emit('CLIENT_MSG', {msg: document.getElementById('input').value, socketId: socket.id});
+        document.getElementById('input').value = '';
+    };
+    const addName = (username, token) => {
+        const msgSpan = document.createElement('span').innerHTML = `Name ${username}: Token ${token}`;
+        document.getElementById('title').innerText = msgSpan;
+    }
+    const addUsersCount = (data) => {
+        document.getElementById('total-users').innerText = `${data.cnt}`;
+    }
+
+    window.addEventListener('beforeunload', function (e) {
+        socket.emit('USER_DISCONNECTED', {socketId: socket.id});
+    });
+</script>
+</html>
+
